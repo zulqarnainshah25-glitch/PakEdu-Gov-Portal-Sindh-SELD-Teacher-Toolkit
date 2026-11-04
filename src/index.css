@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   ALLFORU EDUCATION PORTAL (https://www.allfaru.dpdns.org/) EXACT THEME
+   Theme Name: ALLFORU - AI-Powered Education ERP & Sindh SELD Portal
+   Style: Modern Tech / Deep Purple (#5b21b6) & Neon Pink (#ec4899)
+   ========================================================================== */
+
+:root {
+  --primary: #5b21b6; /* Deep Purple */
+  --secondary: #ec4899; /* Neon Pink */
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --accent: #8b5cf6;
+  --border: rgba(91, 33, 182, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 15px rgba(91, 33, 182, 0.08);
+  --shadow-lg: 0 10px 25px rgba(91, 33, 182, 0.15);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode {
+  --primary: #8b5cf6;
+  --secondary: #ec4899;
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(30, 41, 59, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+@layer base {
+  body {
+    font-family: 'Poppins', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+    transition: background-color 0.35s ease, color 0.35s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Top Gradient Progress / Accent Bar from allfaru.dpdns.org */
+.allforu-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  z-index: 9999;
+}
+
+/* Glassmorphic Header & Containers from allfaru.dpdns.org */
+.allforu-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Gradient Pill Button (.btn-demo on allfaru.dpdns.org) */
+.allforu-btn-demo {
+  background: linear-gradient(135deg, var(--secondary), #f43f5e);
+  color: #ffffff !important;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.allforu-btn-demo:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+}
+
+/* Section Title Accent Bar from allfaru.dpdns.org */
+.allforu-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.allforu-section-title::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 24px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+  border-radius: 4px;
+}
+
+/* Featured Module Cards (.tool-card on allfaru.dpdns.org) */
+.allforu-tool-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.allforu-tool-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+
+/* Animated News Ticker from allfaru.dpdns.org */
+@keyframes allforuTickerScroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.allforu-ticker-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: allforuTickerScroll 32s linear infinite;
+}
+
+.allforu-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* ==========================================================================
+   GLOBAL A4 PRINT & .printing-mode STYLES
+   Hides navigation sidebar, top header, ticker, hero, forms, and action buttons
+   so ONLY the generated document (.printable-a4-sheet) is printed cleanly on A4.
+   ========================================================================== */
+
+body.printing-mode .no-print,
+body.printing-mode .app-sidebar,
+body.printing-mode .app-topbar,
+body.printing-mode .app-footer,
+body.printing-mode .allforu-progress-bar {
+  display: none !important;
+}
+
+body.printing-mode .app-main-wrapper {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #ffffff !important;
+}
+
+body.printing-mode .printable-a4-sheet {
+  max-width: 210mm !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 8mm !important;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .no-print,
+  .app-sidebar,
+  .app-topbar,
+  .app-footer,
+  .allforu-progress-bar {
+    display: none !important;
+  }
+
+  .app-main-wrapper,
+  .app-content-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .printable-a4-sheet {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

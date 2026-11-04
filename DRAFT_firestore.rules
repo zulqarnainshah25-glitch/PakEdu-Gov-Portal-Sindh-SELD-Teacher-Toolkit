@@ -1,0 +1,183 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 1 & Phase 4.1: Global Safety Net (Default-Deny Catch-All)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Reusable Hardened Global Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // Pillar 2: Validation Blueprint for SyllabusLessonPlan
+    function isValidSyllabusLessonPlan(data) {
+      return data.keys().hasAll([
+        'board',
+        'section',
+        'className',
+        'subject',
+        'chapter',
+        'topic',
+        'duration',
+        'planType',
+        'slos',
+        'previousKnowledge',
+        'teachingAids',
+        'introduction',
+        'procedure',
+        'teacherActivities',
+        'studentActivities',
+        'assessment',
+        'homework',
+        'vocabulary',
+        'lifeSkills',
+        'teacherReflection',
+        'questions',
+        'exercise',
+        'worksheetPrompt',
+        'bloomAssessment',
+        'visibility',
+        'authorId',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'board',
+        'section',
+        'className',
+        'subject',
+        'chapter',
+        'topic',
+        'duration',
+        'planType',
+        'slos',
+        'previousKnowledge',
+        'teachingAids',
+        'introduction',
+        'procedure',
+        'teacherActivities',
+        'studentActivities',
+        'assessment',
+        'homework',
+        'vocabulary',
+        'lifeSkills',
+        'teacherReflection',
+        'questions',
+        'exercise',
+        'worksheetPrompt',
+        'bloomAssessment',
+        'visibility',
+        'authorId',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.board is string && data.board.size() >= 1 && data.board.size() <= 50 &&
+      (data.board == 'Sindh STBB' || data.board == 'Punjab PTB') &&
+      data.section is string && data.section.size() >= 1 && data.section.size() <= 50 &&
+      (data.section == 'Primary' || data.section == 'Middle' || data.section == 'Secondary' || data.section == 'Higher Secondary') &&
+      data.className is string && data.className.size() >= 1 && data.className.size() <= 30 &&
+      data.subject is string && data.subject.size() >= 1 && data.subject.size() <= 100 &&
+      data.chapter is string && data.chapter.size() >= 1 && data.chapter.size() <= 200 &&
+      data.topic is string && data.topic.size() >= 1 && data.topic.size() <= 200 &&
+      data.duration is string && data.duration.size() >= 1 && data.duration.size() <= 50 &&
+      data.planType is string && data.planType.size() >= 1 && data.planType.size() <= 20 &&
+      (data.planType == 'Daily' || data.planType == 'Weekly') &&
+      data.slos is string && data.slos.size() >= 1 && data.slos.size() <= 3000 &&
+      data.previousKnowledge is string && data.previousKnowledge.size() >= 1 && data.previousKnowledge.size() <= 2000 &&
+      data.teachingAids is string && data.teachingAids.size() >= 1 && data.teachingAids.size() <= 2000 &&
+      data.introduction is string && data.introduction.size() >= 1 && data.introduction.size() <= 3000 &&
+      data.procedure is string && data.procedure.size() >= 1 && data.procedure.size() <= 5000 &&
+      data.teacherActivities is string && data.teacherActivities.size() >= 1 && data.teacherActivities.size() <= 3000 &&
+      data.studentActivities is string && data.studentActivities.size() >= 1 && data.studentActivities.size() <= 3000 &&
+      data.assessment is string && data.assessment.size() >= 1 && data.assessment.size() <= 3000 &&
+      data.homework is string && data.homework.size() >= 1 && data.homework.size() <= 2000 &&
+      data.vocabulary is string && data.vocabulary.size() >= 1 && data.vocabulary.size() <= 4000 &&
+      data.lifeSkills is string && data.lifeSkills.size() >= 1 && data.lifeSkills.size() <= 2000 &&
+      data.teacherReflection is string && data.teacherReflection.size() >= 1 && data.teacherReflection.size() <= 2000 &&
+      data.questions is string && data.questions.size() >= 1 && data.questions.size() <= 4000 &&
+      data.exercise is string && data.exercise.size() >= 1 && data.exercise.size() <= 4000 &&
+      data.worksheetPrompt is string && data.worksheetPrompt.size() >= 1 && data.worksheetPrompt.size() <= 4000 &&
+      data.bloomAssessment is string && data.bloomAssessment.size() >= 1 && data.bloomAssessment.size() <= 4000 &&
+      data.visibility is string && data.visibility.size() >= 1 && data.visibility.size() <= 20 &&
+      data.visibility == 'public' &&
+      data.authorId is string && data.authorId.size() >= 1 && data.authorId.size() <= 128 &&
+      data.authorId.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.authorId == request.auth.uid &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // Collection: /syllabus_data/{lessonId}
+    match /syllabus_data/{lessonId} {
+      // Single-document read: validate ID and enforce public visibility
+      allow get: if isValidId(lessonId) && existing().visibility == 'public';
+
+      // List query enforcer: explicitly evaluate resource.data without get()/exists()
+      allow list: if existing().visibility == 'public';
+
+      // Create: require verified user, valid ID, schema blueprint, and server timestamps
+      allow create: if isVerifiedUser() &&
+        isValidId(lessonId) &&
+        isValidSyllabusLessonPlan(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      // Update: require verified user, valid ID, schema blueprint wrapping the block, ownership, immutable fields, and action-based affectedKeys
+      allow update: if isVerifiedUser() &&
+        isValidId(lessonId) &&
+        isValidSyllabusLessonPlan(incoming()) &&
+        existing().authorId == request.auth.uid &&
+        incoming().authorId == existing().authorId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (
+          // Action: Update lesson plan content
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'duration',
+            'planType',
+            'slos',
+            'previousKnowledge',
+            'teachingAids',
+            'introduction',
+            'procedure',
+            'teacherActivities',
+            'studentActivities',
+            'assessment',
+            'homework',
+            'vocabulary',
+            'lifeSkills',
+            'teacherReflection',
+            'questions',
+            'exercise',
+            'worksheetPrompt',
+            'bloomAssessment',
+            'updatedAt'
+          ])
+        );
+
+      // Delete: only the verified author can delete their syllabus entry
+      allow delete: if isVerifiedUser() &&
+        isValidId(lessonId) &&
+        existing().authorId == request.auth.uid;
+    }
+  }
+}

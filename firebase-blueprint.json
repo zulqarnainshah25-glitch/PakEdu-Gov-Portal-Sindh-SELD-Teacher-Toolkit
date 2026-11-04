@@ -1,0 +1,220 @@
+{
+  "entities": {
+    "SyllabusLessonPlan": {
+      "title": "SyllabusLessonPlan",
+      "description": "Curriculum lesson plan entry stored in syllabus_data imported from Google Sheets and STBB/PTB boards.",
+      "type": "object",
+      "properties": {
+        "board": {
+          "type": "string",
+          "description": "Educational board name",
+          "enum": ["Sindh STBB", "Punjab PTB"],
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "section": {
+          "type": "string",
+          "description": "School section tier",
+          "enum": ["Primary", "Middle", "Secondary", "Higher Secondary"],
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "className": {
+          "type": "string",
+          "description": "Class level from KG to 12th",
+          "maxLength": 30,
+          "minLength": 1
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject name",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        "chapter": {
+          "type": "string",
+          "description": "Chapter number and title",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "topic": {
+          "type": "string",
+          "description": "Specific lesson topic",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "duration": {
+          "type": "string",
+          "description": "Duration of the lesson",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "planType": {
+          "type": "string",
+          "description": "Daily or Weekly lesson plan type",
+          "enum": ["Daily", "Weekly"],
+          "maxLength": 20,
+          "minLength": 1
+        },
+        "slos": {
+          "type": "string",
+          "description": "Student Learning Outcomes",
+          "maxLength": 3000,
+          "minLength": 1
+        },
+        "previousKnowledge": {
+          "type": "string",
+          "description": "Prior knowledge check questions and concepts",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "teachingAids": {
+          "type": "string",
+          "description": "Instructional materials and teaching aids",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "introduction": {
+          "type": "string",
+          "description": "Warm-up and topic introduction narrative",
+          "maxLength": 3000,
+          "minLength": 1
+        },
+        "procedure": {
+          "type": "string",
+          "description": "Step-by-step instructional procedure",
+          "maxLength": 5000,
+          "minLength": 1
+        },
+        "teacherActivities": {
+          "type": "string",
+          "description": "Specific actions performed by the teacher",
+          "maxLength": 3000,
+          "minLength": 1
+        },
+        "studentActivities": {
+          "type": "string",
+          "description": "Specific participatory activities for students",
+          "maxLength": 3000,
+          "minLength": 1
+        },
+        "assessment": {
+          "type": "string",
+          "description": "Formative and summative class assessment questions",
+          "maxLength": 3000,
+          "minLength": 1
+        },
+        "homework": {
+          "type": "string",
+          "description": "Home assignment tasks for students",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "vocabulary": {
+          "type": "string",
+          "description": "Key vocabulary terms and word meanings",
+          "maxLength": 4000,
+          "minLength": 1
+        },
+        "lifeSkills": {
+          "type": "string",
+          "description": "Core life skills and values integrated into the lesson",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "teacherReflection": {
+          "type": "string",
+          "description": "Post-lesson reflection prompts and observations for the teacher",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "questions": {
+          "type": "string",
+          "description": "Comprehension and Q&A questions from the syllabus sheet",
+          "maxLength": 4000,
+          "minLength": 1
+        },
+        "exercise": {
+          "type": "string",
+          "description": "Textbook exercises and fill-in-the-blanks from the syllabus sheet",
+          "maxLength": 4000,
+          "minLength": 1
+        },
+        "worksheetPrompt": {
+          "type": "string",
+          "description": "Structured student worksheet exercises and creative drawing prompt",
+          "maxLength": 4000,
+          "minLength": 1
+        },
+        "bloomAssessment": {
+          "type": "string",
+          "description": "Bloom's Taxonomy cognitive domain questions",
+          "maxLength": 4000,
+          "minLength": 1
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Visibility state for curriculum sharing",
+          "enum": ["public"],
+          "maxLength": 20,
+          "minLength": 1
+        },
+        "authorId": {
+          "type": "string",
+          "description": "UID of the authenticated user who created or imported this syllabus entry",
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the syllabus entry was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the syllabus entry was last updated"
+        }
+      },
+      "required": [
+        "board",
+        "section",
+        "className",
+        "subject",
+        "chapter",
+        "topic",
+        "duration",
+        "planType",
+        "slos",
+        "previousKnowledge",
+        "teachingAids",
+        "introduction",
+        "procedure",
+        "teacherActivities",
+        "studentActivities",
+        "assessment",
+        "homework",
+        "vocabulary",
+        "lifeSkills",
+        "teacherReflection",
+        "questions",
+        "exercise",
+        "worksheetPrompt",
+        "bloomAssessment",
+        "visibility",
+        "authorId",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/syllabus_data/{lessonId}": {
+      "schema": {
+        "$ref": "#/entities/SyllabusLessonPlan"
+      },
+      "description": "Collection storing structured lesson plans imported from Google Sheets and indexed by class, subject, chapter, and topic."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "PakEdu & Gov Portal — Sindh SELD & Teacher Toolkit",
+  "description": "Comprehensive educational and administrative toolkit for Pakistani teachers and Sindh government employees featuring AI Lesson Plan Generator with Firestore syllabus lookup, 2026 Salary Calculator, and SELD FRAMES Leave Proforma Generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
